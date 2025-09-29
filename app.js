@@ -47,13 +47,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const col = document.createElement("div");
       col.className = "col";
 
-      // Determine which buttons/badges to show
-      let actionButton = "";
+      // Action buttons
+      let actionButtons = "";
+
       if (item.type === "Found" && !item.claimed) {
-        actionButton = `<button class="btn btn-success btn-sm mb-2 w-100 claimBtn">Claim</button>`;
+        actionButtons += `<button class="btn btn-success btn-sm mb-2 w-100 claimBtn">Claim</button>`;
       } else if (item.type === "Lost" && !item.foundBy) {
-        actionButton = `<button class="btn btn-warning btn-sm mb-2 w-100 markFoundBtn">Mark as Found</button>`;
+        actionButtons += `<button class="btn btn-warning btn-sm mb-2 w-100 markFoundBtn">Mark as Found</button>`;
       }
+
+      // Add Delete button
+      actionButtons += `<button class="btn btn-danger btn-sm mb-2 w-100 deleteBtn">Delete Listing</button>`;
 
       const claimedBadge = item.claimed
         ? `<span class="badge bg-info ms-1">Claimed</span>`
@@ -64,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
         : "";
 
       col.innerHTML = `
-      <div class="card p-3 h-100 shadow-sm rounded">
+      <div class="card p-3 h-100 shadow-sm rounded item-card">
         <h5>${item.itemName} - ${item.description}</h5>
         <p>
           <span class="badge bg-${item.type === "Lost" ? "danger" : "success"}">${item.type}</span>
@@ -73,13 +77,13 @@ document.addEventListener("DOMContentLoaded", () => {
         <p><strong>Name:</strong> ${item.name}</p>
         ${item.location ? `<p><strong>Location:</strong> ${item.location}</p>` : ""}
         ${item.date ? `<p><strong>Date:</strong> ${item.date}</p>` : ""}
-        ${actionButton}
+        ${actionButtons}
       </div>
       `;
 
       itemsList.appendChild(col);
 
-      // Event listeners for buttons
+      // Claim button
       const claimBtn = col.querySelector(".claimBtn");
       if (claimBtn) {
         claimBtn.addEventListener("click", async () => {
@@ -91,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
+      // Mark as Found button
       const markFoundBtn = col.querySelector(".markFoundBtn");
       if (markFoundBtn) {
         markFoundBtn.addEventListener("click", async () => {
@@ -105,12 +110,29 @@ document.addEventListener("DOMContentLoaded", () => {
           fetchItems();
         });
       }
+
+      // Delete button
+      const deleteBtn = col.querySelector(".deleteBtn");
+      if (deleteBtn) {
+        deleteBtn.addEventListener("click", async () => {
+          const confirmEmail = prompt("Enter your email to confirm deletion:");
+          if (!confirmEmail) return;
+
+          if (confirmEmail === item.email) {
+            await db.collection("lost_found_items").doc(docId).delete();
+            alert("Listing deleted successfully!");
+            fetchItems();
+          } else {
+            alert("Email does not match! You cannot delete this listing.");
+          }
+        });
+      }
     });
   };
 
   // Initial fetch
   fetchItems();
 
-  // Optional: refresh every 30 seconds
+  // Refresh every 30 seconds
   setInterval(fetchItems, 30000);
 });
