@@ -1,5 +1,5 @@
 // frontend/app.js
-const API_BASE = "https://lost-found.onrender.com";
+const API_BASE = "https://lost-found-9v55.onrender.com";
 
 document.addEventListener("DOMContentLoaded", () => {
   const itemForm = document.getElementById("itemForm");
@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     searchInput.addEventListener("keyup", (e) => {
       const term = e.target.value.toLowerCase();
       const items = document.querySelectorAll(".item-col");
-      
+
       items.forEach((col) => {
         // Search inside the card's text content
         const text = col.textContent.toLowerCase();
@@ -51,7 +51,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const date = document.getElementById("date").value;
 
     const payload = buildPayload({
-      name, email, itemName, description, type, location, date,
+      name,
+      email,
+      itemName,
+      description,
+      type,
+      location,
+      date,
     });
 
     try {
@@ -67,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (email) localStorage.setItem("userEmail", email);
-      
+
       itemForm.reset();
       // Visual feedback
       alert("Item posted successfully!");
@@ -81,8 +87,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- 3. FETCH & RENDER ITEMS (Updated for New UI) ---
   async function fetchItems() {
     // Show loading state if empty (optional polish)
-    if(itemsList.innerHTML === "") {
-        itemsList.innerHTML = '<div class="text-center w-100 mt-4 text-muted">Loading...</div>';
+    if (itemsList.innerHTML === "") {
+      itemsList.innerHTML =
+        '<div class="text-center w-100 mt-4 text-muted">Loading...</div>';
     }
 
     try {
@@ -103,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       items.forEach((item) => {
         const docId = item.id;
-        
+
         // UI Logic: Determine styles based on Lost/Found status
         const isLost = item.type === "Lost";
         const typeClass = isLost ? "type-lost" : "type-found";
@@ -126,9 +133,9 @@ document.addEventListener("DOMContentLoaded", () => {
         let actionButtonsHtml = "";
         // Only show functional buttons if item is active
         if (item.type === "Found" && !item.claimed) {
-            actionButtonsHtml += `<button class="btn btn-outline-success btn-sm flex-fill action-btn claimBtn">✅ Claim Item</button>`;
+          actionButtonsHtml += `<button class="btn btn-outline-success btn-sm flex-fill action-btn claimBtn">✅ Claim Item</button>`;
         } else if (item.type === "Lost" && !item.found_by) {
-            actionButtonsHtml += `<button class="btn btn-outline-primary btn-sm flex-fill action-btn markFoundBtn">🙌 Mark Found</button>`;
+          actionButtonsHtml += `<button class="btn btn-outline-primary btn-sm flex-fill action-btn markFoundBtn">🙌 Mark Found</button>`;
         }
         // Delete is always available
         actionButtonsHtml += `<button class="btn btn-outline-danger btn-sm flex-fill action-btn deleteBtn">🗑️ Delete</button>`;
@@ -224,17 +231,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const deleteBtn = col.querySelector(".deleteBtn");
         if (deleteBtn) {
           deleteBtn.addEventListener("click", async () => {
-            const confirmEmail = prompt("Enter your email to confirm deletion:");
+            const confirmEmail = prompt(
+              "Enter your email to confirm deletion:",
+            );
             if (!confirmEmail) return;
-            
-            if (!confirm("Are you sure you want to delete this listing?")) return;
+
+            if (!confirm("Are you sure you want to delete this listing?"))
+              return;
 
             try {
               const delRes = await fetch(
                 `${API_BASE}/items/${docId}?email=${encodeURIComponent(confirmEmail)}`,
-                { method: "DELETE" }
+                { method: "DELETE" },
               );
-              
+
               if (!delRes.ok) {
                 const err = await delRes.json();
                 throw new Error(err.detail || "Delete failed");
@@ -272,10 +282,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initial Fetch & Polling
   fetchItems();
   setInterval(fetchItems, 30000); // Poll every 30 seconds
+
+  //preventing user from selecting future dates in calendar
+  const dateInput = document.getElementById("date");
+
+  const today = new Date().toISOString().split("T")[0];
+  dateInput.max = today;
 });
-
-//preventing user from selecting future dates in calendar
-const dateInput = document.getElementById("date");
-
-const today = new Date().toISOString().split("T")[0];
-dateInput.max = today;
