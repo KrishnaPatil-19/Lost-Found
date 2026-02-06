@@ -1,0 +1,123 @@
+:root {
+  --bg-color: #f4f6f8;
+  --primary-color: #4361ee;
+  --text-dark: #2b2d42;
+  --text-muted: #8d99ae;
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --border-radius: 12px;
+  --lost-color: #ef233c;
+  --found-color: #2ec4b6;
+}
+
+body {
+  background-color: var(--bg-color);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text-dark);
+}
+
+/* Navbar Tweaks */
+.navbar {
+  background: linear-gradient(90deg, #4361ee, #3f37c9) !important;
+}
+
+/* Form Card Styling */
+.form-card {
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  background: #ffffff;
+}
+
+/* Sticky Sidebar on Desktop */
+@media (min-width: 992px) {
+  .sticky-top-custom {
+    position: sticky;
+    top: 2rem;
+    z-index: 100;
+  }
+}
+
+/* Form Controls */
+.form-control, .form-select {
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background-color: #fbfbfb;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+  background-color: #fff;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 10px;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #3751cc;
+  transform: translateY(-1px);
+}
+
+/* Item Cards (These classes should be used in your JS) */
+.item-card {
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: white;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.08);
+}
+
+/* Left border indicator based on type */
+.item-card.type-lost {
+  border-left: 5px solid var(--lost-color);
+}
+.item-card.type-found {
+  border-left: 5px solid var(--found-color);
+}
+
+.item-card .card-body {
+  padding: 1.5rem;
+}
+
+/* Badges */
+.badge-lost {
+  background-color: rgba(239, 35, 60, 0.1);
+  color: var(--lost-color);
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.badge-found {
+  background-color: rgba(46, 196, 182, 0.1);
+  color: var(--found-color);
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.meta-info {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
